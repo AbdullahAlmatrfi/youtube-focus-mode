@@ -7,6 +7,12 @@
   display: none !important;
 }
 
+/* Force Comic Sans across all YouTube content, including Focus Mode. */
+body,
+body * {
+  font-family: "Comic Sans MS", "Comic Sans", cursive !important;
+}
+
 body.myt-focus ytd-app {
   visibility: hidden;
   pointer-events: none;
