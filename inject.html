@@ -1,0 +1,41 @@
+<div id="myt-overlay" role="main" aria-label="Minimal YouTube">
+
+  <!-- LOGO: two separate elements so they can never overlap -->
+  <div id="myt-logo">
+    <div id="myt-logo-inner">
+      <!-- Red badge only -->
+      <svg id="myt-badge" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="68" height="48" rx="14" fill="#FF0000" />
+        <polygon points="26,13 26,35 46,24" fill="white" />
+      </svg>
+      <!-- Wordmark as plain text — no SVG clipping issues -->
+      <span id="myt-wordmark">YouTube</span>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div id="myt-search-wrapper">
+    <div id="myt-search-box">
+      <input id="myt-search" type="text" placeholder="Search YouTube…" autocomplete="off" spellcheck="false"
+        aria-label="Search YouTube" />
+      <button id="myt-search-btn" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="22" y2="22" />
+        </svg>
+      </button>
+    </div>
+    <!-- Suggestions populate here -->
+    <ul id="myt-suggestions"></ul>
+  </div>
+
+  <!-- Spacer pushes explore button lower in the page -->
+  <div id="myt-spacer"></div>
+
+  <!-- Explore button sits between middle and bottom -->
+  <div id="myt-explore-wrapper">
+    <button id="myt-explore-btn">↓ Explore Feed</button>
+  </div>
+
+</div>
