@@ -3,6 +3,10 @@
   "name": "Minimal YouTube",
   "version": "4.0.0",
   "description": "Transform YouTube into a distraction-free, search-first experience.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Send Feedback"
+  },
   "icons": {
     "16": "icons/Logo_icon.png",
     "48": "icons/Logo_icon.png",
