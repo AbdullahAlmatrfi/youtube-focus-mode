@@ -13,9 +13,8 @@ body * {
   font-family: "Comic Sans MS", "Comic Sans", cursive !important;
 }
 
-body.myt-focus ytd-app {
-  visibility: hidden;
-  pointer-events: none;
+body.myt-focus {
+  overflow: hidden;
 }
 
 /* ── OVERLAY ── */
@@ -508,5 +507,74 @@ body.myt-focus ytd-app {
   to {
     opacity: 0;
     transform: translateY(28px);
+  }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  #myt-search-wrapper {
+    width: min(560px, 86vw);
+  }
+
+  #myt-explore-wrapper {
+    padding: 12px 0 8vh;
+  }
+}
+
+@media (max-width: 640px) {
+  #myt-overlay {
+    padding-top: 14vh;
+  }
+
+  #myt-logo {
+    margin-bottom: 24px;
+  }
+
+  #myt-badge {
+    width: 40px;
+    height: 28px;
+  }
+
+  #myt-wordmark {
+    font-size: 24px;
+  }
+
+  #myt-search-wrapper {
+    width: 88vw;
+  }
+
+  #myt-search {
+    padding: 12px 44px 12px 18px;
+    font-size: 14px;
+  }
+
+  #myt-suggestions li {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+
+  #myt-explore-btn {
+    padding: 10px 22px;
+    font-size: 12.5px;
+  }
+
+  #myt-explore-wrapper {
+    padding-bottom: 14vh;
+  }
+
+  #myt-refocus-btn {
+    bottom: 16px;
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+}
+
+@media (max-height: 700px) {
+  #myt-overlay {
+    padding-top: 12vh;
+  }
+
+  #myt-explore-wrapper {
+    padding-bottom: 12vh;
   }
 }
