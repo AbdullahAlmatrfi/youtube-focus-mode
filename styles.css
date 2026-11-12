@@ -1,130 +1,103 @@
 /* ============================================================
-   styles.css — Minimal YouTube v6
-   Fixed desktop layout. No responsive breakpoints.
+   styles.css — Minimal YouTube v4.1
    ============================================================ */
 
-.myt-hidden {
-  display: none !important;
-}
-
-/* Force Comic Sans across all YouTube content, including Focus Mode. */
+/* Comic Sans on purpose: it is the look of this extension. */
 body,
 body * {
   font-family: "Comic Sans MS", "Comic Sans", cursive !important;
 }
 
-body.myt-focus {
+/* ── FOCUS MODE: hide the feed without removing it ──
+   visibility keeps layout (thumbnails keep loading) and removes the
+   hidden feed from the Tab order and from screen readers. */
+html.myt-focus body {
   overflow: hidden;
+}
+
+html.myt-focus ytd-page-manager,
+html.myt-focus ytd-mini-guide-renderer,
+html.myt-focus ytd-guide-renderer,
+html.myt-focus tp-yt-app-drawer {
+  visibility: hidden;
+}
+
+/* Keep the YouTube header usable (notifications, create, account) but
+   remove what the overlay already provides: logo, menu button, search. */
+html.myt-focus ytd-masthead #start,
+html.myt-focus ytd-masthead #center {
+  visibility: hidden;
+}
+
+html.myt-focus ytd-masthead,
+html.myt-focus ytd-masthead #container {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+html.myt-focus ytd-masthead #background {
+  display: none !important;
+}
+
+html.myt-focus ytd-masthead {
+  --yt-spec-text-primary: #f1f1f1;
+  --yt-spec-text-secondary: #aaa;
+  --yt-spec-icon-active-other: #f1f1f1;
+  --yt-spec-icon-inactive: #aaa;
+  --yt-spec-base-background: #0f0f0f;
+  --yt-spec-general-background-a: #0f0f0f;
 }
 
 /* ── OVERLAY ── */
 #myt-overlay {
   position: fixed;
-  inset: 0;
-  z-index: 9999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-top: 18vh;
+  justify-content: center;
+  /* top = header height, bottom = room for the Focus Mode pill, so the
+     block sits in the visual centre */
+  padding: var(--ytd-masthead-height, 56px) 0 76px;
   color: #e8e8e8;
   animation: myt-fade-in 0.3s ease both;
+  /* hidden, not auto: the oversized glow layers below would otherwise make
+     the overlay scrollable and scroll the content away from its background */
   overflow: hidden;
-
-  /* Subtle living background — slow drifting gradient, barely noticeable */
-  background: #0f0f0f;
+  background: #0d0d10;
 }
 
-/* ── CINEMATIC BACKGROUND LAYERS ── */
-
-/* Layer 1: slow drifting ambient glow */
+/* ── BACKGROUND: two soft static glows (Option B). Nothing moves. ── */
+#myt-overlay::before,
 #myt-overlay::after {
   content: "";
-  position: absolute;
-  inset: -40%;
-  background:
-    radial-gradient(ellipse at 28% 38%, rgba(180, 28, 28, 0.08) 0%, transparent 52%),
-    radial-gradient(ellipse at 72% 62%, rgba(20, 20, 140, 0.05) 0%, transparent 52%),
-    radial-gradient(ellipse at 50% 85%, rgba(20, 100, 60, 0.04) 0%, transparent 48%);
-  animation: myt-bg-drift 20s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Layer 2: cinematic light ray — single diagonal beam */
-#myt-overlay .myt-ray {
-  position: absolute;
-  top: -20%;
-  left: 30%;
-  width: 1px;
-  height: 160%;
-  background: linear-gradient(to bottom,
-      transparent 0%,
-      rgba(255, 255, 255, 0.018) 30%,
-      rgba(255, 255, 255, 0.032) 50%,
-      rgba(255, 255, 255, 0.018) 70%,
-      transparent 100%);
-  transform: rotate(22deg) scaleX(120);
-  transform-origin: top center;
-  animation: myt-ray-breathe 12s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Layer 3: film grain overlay */
-#myt-overlay .myt-grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.028;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  pointer-events: none;
-  z-index: 0;
-  animation: myt-grain-shift 0.12s steps(1) infinite;
-}
-
-/* Layer 4: floating orbs — slow, barely visible */
-#myt-overlay .myt-orb {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
-  filter: blur(60px);
-  opacity: 0;
-  animation: myt-orb-float linear infinite;
 }
 
-#myt-overlay .myt-orb:nth-child(1) {
-  width: 320px;
-  height: 320px;
-  background: rgba(200, 30, 30, 0.07);
-  top: 60%;
-  left: 10%;
-  animation-duration: 28s;
-  animation-delay: 0s;
+#myt-overlay::before {
+  width: 42vw;
+  height: 42vw;
+  left: 14%;
+  top: 14%;
+  background: radial-gradient(circle, rgba(200, 30, 30, 0.24) 0%, transparent 68%);
 }
 
-#myt-overlay .myt-orb:nth-child(2) {
-  width: 240px;
-  height: 240px;
-  background: rgba(60, 60, 200, 0.05);
-  top: 20%;
-  left: 70%;
-  animation-duration: 34s;
-  animation-delay: -12s;
+#myt-overlay::after {
+  width: 38vw;
+  height: 38vw;
+  right: 12%;
+  top: 24%;
+  background: radial-gradient(circle, rgba(60, 70, 220, 0.2) 0%, transparent 68%);
 }
 
-#myt-overlay .myt-orb:nth-child(3) {
-  width: 180px;
-  height: 180px;
-  background: rgba(200, 160, 30, 0.04);
-  top: 40%;
-  left: 50%;
-  animation-duration: 22s;
-  animation-delay: -6s;
-}
-
-/* Everything content sits above bg layers */
+/* Everything with content sits above the background layers */
 #myt-logo,
 #myt-search-wrapper,
 #myt-spacer,
@@ -154,7 +127,6 @@ body.myt-focus {
 }
 
 #myt-wordmark {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-size: 30px;
   font-weight: 700;
   color: #e8e8e8;
@@ -165,13 +137,11 @@ body.myt-focus {
 
 /* ── SEARCH ── */
 #myt-search-wrapper {
-  width: 560px;
-  /* fixed — no min/max */
+  width: min(560px, 92vw);
   position: relative;
   opacity: 0;
   animation: myt-slide-up 0.45s ease 0.13s both;
-  z-index: 99998;
-  /* keeps dropdown stacking context above strip */
+  z-index: 3;
 }
 
 #myt-search-box {
@@ -182,320 +152,355 @@ body.myt-focus {
 
 #myt-search {
   width: 100%;
-  padding: 14px 48px 14px 22px;
-  border: 1.5px solid #2a2a2a;
+  padding: 14px 92px 14px 22px; /* right room for the history + search buttons */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* >= 3:1 against the page */
   border-radius: 28px;
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  text-align: start;
   outline: none;
-  background: #1c1c1c;
-  color: #e8e8e8;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  color: #f1f1f1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 18px 50px rgba(0, 0, 0, 0.5);
   transition: border-color 0.2s, box-shadow 0.2s, border-radius 0.15s;
   box-sizing: border-box;
   caret-color: #ff4444;
 }
 
 #myt-search:focus {
-  border-color: #ff3333;
-  box-shadow: 0 2px 22px rgba(255, 50, 50, 0.18);
+  border-color: #ff3d3d;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 0 3px rgba(255, 61, 61, 0.22), 0 18px 50px rgba(0, 0, 0, 0.5);
 }
 
 #myt-search.has-suggestions {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border-bottom-color: #252525;
+  border-bottom-color: rgba(255, 255, 255, 0.4);
 }
 
 #myt-search::placeholder {
-  color: #4a4a4a;
+  color: #a0a0a6;
 }
 
-#myt-search-btn {
+/* Action buttons overlaid on the right of the search pill */
+#myt-search-actions {
   position: absolute;
-  right: 14px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  color: #555;
   display: flex;
   align-items: center;
-  transition: color 0.15s;
+  gap: 2px;
 }
 
+.myt-sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.16);
+  margin: 0 2px;
+}
+
+#myt-history-btn,
+#myt-search-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  color: #b9b9c2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.18s, border-color 0.18s, transform 0.18s;
+}
+
+#myt-history-btn:hover,
 #myt-search-btn:hover {
-  color: #ff4444;
+  color: #fff;
 }
 
-/* ── SUGGESTIONS ── */
-#myt-suggestions {
+/* History button lit while recent mode is armed */
+#myt-history-btn.on {
+  color: #ff6b6b;
+  background: rgba(255, 61, 61, 0.14);
+  border-color: rgba(255, 61, 61, 0.4);
+  transform: scale(1.06);
+}
+
+html.myt-focus ytd-page-manager:focus {
+  outline: none;
+}
+
+#myt-history-btn:focus-visible,
+#myt-search-btn:focus-visible,
+#myt-explore-btn:focus-visible,
+#myt-refocus-btn:focus-visible {
+  outline: 2px solid #ff4444;
+  outline-offset: 2px;
+}
+
+/* ── GREETING ── */
+#myt-greet {
+  font-size: 12.5px;
+  color: #9a9aa4;
+  margin: -14px 0 22px;
+  direction: ltr; /* keep the trailing period from jumping on RTL pages */
+  text-align: center;
+  opacity: 0;
+  animation: myt-slide-up 0.45s ease 0.1s both;
+}
+
+#myt-greet:empty {
+  display: none;
+}
+
+/* ── DROPDOWN PANELS (suggestions + recent share one look) ── */
+#myt-suggestions,
+#myt-recent {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
   list-style: none;
   margin: 0;
-  padding: 6px 0 10px;
-  background: #1c1c1c;
-  border: 1.5px solid #ff3333;
-  border-top: none;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-  z-index: 99999;
-  /* above the strip and everything else */
+  padding: 6px;
+  background: rgba(22, 22, 28, 0.92);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  z-index: 4;
   box-sizing: border-box;
   overflow: hidden;
+  transform-origin: top center;
 }
 
-#myt-suggestions.visible {
+/* The live-suggestions panel joins the search pill (no gap, red seam). */
+#myt-suggestions {
+  top: 100%;
+  padding: 6px 0 10px;
+  border: 1px solid #ff3d3d;
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+}
+
+#myt-suggestions.visible,
+#myt-recent.visible {
   display: block;
+  animation: myt-drop 0.4s cubic-bezier(0.2, 1.3, 0.35, 1) both;
 }
 
-#myt-suggestions li {
+/* Exit animation: the panel lifts and fades instead of vanishing. */
+#myt-suggestions.myt-closing,
+#myt-recent.myt-closing {
+  display: block;
+  pointer-events: none;
+  animation: myt-lift 0.18s ease forwards;
+}
+
+#myt-suggestions li[role="option"],
+#myt-recent li[role="option"] {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 20px;
+  padding: 11px 14px;
+  border-radius: 12px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  color: #bbb;
+  color: #cfcfd6;
   cursor: pointer;
   transition: background 0.1s;
 }
 
 #myt-suggestions li:hover,
-#myt-suggestions li.myt-active {
-  background: #262626;
+#myt-suggestions li.myt-active,
+#myt-recent li:hover,
+#myt-recent li.myt-active {
+  background: rgba(255, 255, 255, 0.07);
   color: #fff;
 }
 
-#myt-suggestions li::before {
+#myt-suggestions li.myt-active,
+#myt-recent li.myt-active {
+  box-shadow: inset 3px 0 0 #ff4444; /* keyboard highlight does not rely on color alone */
+}
+
+/* each row fades up, staggered */
+#myt-suggestions.visible li[role="option"],
+#myt-recent.visible li[role="option"] {
+  opacity: 0;
+  animation: myt-row 0.28s ease forwards;
+}
+
+#myt-suggestions.visible li[role="option"]:nth-child(2),
+#myt-recent.visible li[role="option"]:nth-child(2) { animation-delay: 0.05s; }
+#myt-suggestions.visible li[role="option"]:nth-child(3),
+#myt-recent.visible li[role="option"]:nth-child(3) { animation-delay: 0.1s; }
+#myt-suggestions.visible li[role="option"]:nth-child(4),
+#myt-recent.visible li[role="option"]:nth-child(4) { animation-delay: 0.15s; }
+#myt-suggestions.visible li[role="option"]:nth-child(5),
+#myt-recent.visible li[role="option"]:nth-child(5) { animation-delay: 0.2s; }
+#myt-suggestions.visible li[role="option"]:nth-child(6),
+#myt-recent.visible li[role="option"]:nth-child(6) { animation-delay: 0.25s; }
+
+/* search-glass icon before suggestion + recent rows */
+#myt-suggestions li[role="option"]::before,
+#myt-recent li[role="option"]::before {
   content: "";
   width: 14px;
   height: 14px;
   flex-shrink: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='22' y2='22'/%3E%3C/svg%3E") center/contain no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='22' y2='22'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* recent rows use a clock icon instead */
+#myt-recent li[role="option"]::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* quick-action rows: a red dot marker instead of the search glass */
+#myt-suggestions li.myt-action::before {
+  background: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 0 3px;
+  background-color: #ff3d3d;
+}
+
+#myt-suggestions li.myt-action {
+  color: #f1f1f1;
+}
+
+/* section labels + empty state */
+.myt-sec {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #8a8a92;
+  padding: 10px 14px 4px;
+  pointer-events: none;
+}
+
+.myt-empty {
+  padding: 14px;
+  font-size: 13px;
+  color: #8a8a92;
+  text-align: center;
+}
+
+@keyframes myt-drop {
+  from { opacity: 0; transform: translateY(-8px) scaleY(0.7); }
+  to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+@keyframes myt-lift {
+  from { opacity: 1; transform: translateY(0) scaleY(1); }
+  to { opacity: 0; transform: translateY(-6px) scaleY(0.9); }
+}
+
+@keyframes myt-row {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── SPACER + EXPLORE BUTTON ── */
 #myt-spacer {
-  flex: 1;
+  flex: 0 0 44px;
 }
 
 #myt-explore-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 16px 0 10vh;
+  padding: 0;
   opacity: 0;
   animation: myt-slide-up 0.5s ease 0.22s both;
 }
 
 #myt-explore-btn {
   padding: 11px 28px;
-  background: rgba(22, 22, 22, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 999px;
   font-size: 13.5px;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  color: #bbb;
+  color: #d0d0d4;
   cursor: pointer;
   letter-spacing: 0.04em;
   transition: border-color 0.2s, color 0.2s, transform 0.2s;
 }
 
 #myt-explore-btn:hover {
-  border-color: rgba(255, 255, 255, 0.32);
+  border-color: rgba(255, 255, 255, 0.75);
   color: #fff;
   transform: translateY(-2px);
 }
 
-/* ── REFOCUS PILL ── */
+/* ── REFOCUS PILL: flat glass with a red dot ── */
 #myt-refocus-btn {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10000;
-  padding: 11px 24px;
-  background: linear-gradient(90deg, #ff4d4f 0%, #ff4d4f 45%, #3b82f6 55%, #3b82f6 100%);
-  background-size: 220% 100%;
-  background-position: 50% 50%;
-  color: #0b0b0b;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #e4e4e8;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   cursor: pointer;
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
   white-space: nowrap;
-  animation: myt-fade-in 0.25s ease both, myt-dual-flow 7s ease-in-out infinite;
-  transition: background 0.2s, transform 0.15s;
+  animation: myt-fade-in 0.25s ease both;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+#myt-refocus-btn[hidden] {
+  display: none;
+}
+
+#myt-refocus-btn .myt-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3d3d;
+  flex-shrink: 0;
 }
 
 #myt-refocus-btn:hover {
   transform: translateX(-50%) translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* visually hidden live region for screen readers */
+#myt-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 /* ── ANIMATIONS ── */
 @keyframes myt-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes myt-dual-flow {
-  0% {
-    background-position: 50% 50%;
-  }
-
-  35% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 50% 50%;
-  }
-
-  85% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 50% 50%;
-  }
-}
-
-/* Drifting ambient glow */
-@keyframes myt-bg-drift {
-  0% {
-    transform: translate(0%, 0%) scale(1);
-  }
-
-  33% {
-    transform: translate(3%, -2%) scale(1.04);
-  }
-
-  66% {
-    transform: translate(-2%, 3%) scale(1.02);
-  }
-
-  100% {
-    transform: translate(2%, 1%) scale(1.05);
-  }
-}
-
-/* Light ray breathe — fades in and out slowly */
-@keyframes myt-ray-breathe {
-  0% {
-    opacity: 0;
-    transform: rotate(22deg) scaleX(120) translateX(-8px);
-  }
-
-  40% {
-    opacity: 1;
-  }
-
-  60% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: rotate(22deg) scaleX(120) translateX(8px);
-  }
-}
-
-/* Film grain — shuffle texture each frame for animated noise feel */
-@keyframes myt-grain-shift {
-  0% {
-    background-position: 0px 0px;
-  }
-
-  10% {
-    background-position: -40px -20px;
-  }
-
-  20% {
-    background-position: 20px -40px;
-  }
-
-  30% {
-    background-position: -60px 10px;
-  }
-
-  40% {
-    background-position: 30px 50px;
-  }
-
-  50% {
-    background-position: -20px -60px;
-  }
-
-  60% {
-    background-position: 50px 30px;
-  }
-
-  70% {
-    background-position: -30px 40px;
-  }
-
-  80% {
-    background-position: 10px -30px;
-  }
-
-  90% {
-    background-position: -50px -10px;
-  }
-
-  100% {
-    background-position: 0px 0px;
-  }
-}
-
-/* Floating orbs — slow rise from bottom, fade in then out */
-@keyframes myt-orb-float {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.8);
-  }
-
-  15% {
-    opacity: 1;
-  }
-
-  85% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-80px) scale(1.1);
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes myt-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 #myt-overlay.myt-exit {
@@ -504,28 +509,51 @@ body.myt-focus {
 }
 
 @keyframes myt-fade-out {
-  to {
+  to { opacity: 0; transform: translateY(28px); }
+}
+
+/* Respect the system "reduce motion" setting: keep the look, stop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  #myt-refocus-btn {
+    animation: none;
+  }
+
+  #myt-logo,
+  #myt-greet,
+  #myt-search-wrapper,
+  #myt-explore-wrapper,
+  #myt-overlay,
+  #myt-suggestions.visible,
+  #myt-recent.visible,
+  #myt-suggestions.visible li[role="option"],
+  #myt-recent.visible li[role="option"] {
+    animation: none;
+    opacity: 1;
+  }
+
+  #myt-suggestions.myt-closing,
+  #myt-recent.myt-closing {
+    animation: none;
+    display: none;
+  }
+
+  #myt-overlay.myt-exit {
+    animation: none;
     opacity: 0;
-    transform: translateY(28px);
+  }
+
+  #myt-explore-btn:hover,
+  #myt-refocus-btn:hover {
+    transform: none;
+  }
+
+  #myt-refocus-btn:hover {
+    transform: translateX(-50%);
   }
 }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 960px) {
-  #myt-search-wrapper {
-    width: min(560px, 86vw);
-  }
-
-  #myt-explore-wrapper {
-    padding: 12px 0 8vh;
-  }
-}
-
 @media (max-width: 640px) {
-  #myt-overlay {
-    padding-top: 14vh;
-  }
-
   #myt-logo {
     margin-bottom: 24px;
   }
@@ -539,27 +567,20 @@ body.myt-focus {
     font-size: 24px;
   }
 
-  #myt-search-wrapper {
-    width: 88vw;
-  }
-
   #myt-search {
-    padding: 12px 44px 12px 18px;
+    padding: 12px 86px 12px 18px;
     font-size: 14px;
   }
 
-  #myt-suggestions li {
-    padding: 9px 16px;
+  #myt-suggestions li[role="option"],
+  #myt-recent li[role="option"] {
+    padding: 10px 14px;
     font-size: 13px;
   }
 
   #myt-explore-btn {
     padding: 10px 22px;
     font-size: 12.5px;
-  }
-
-  #myt-explore-wrapper {
-    padding-bottom: 14vh;
   }
 
   #myt-refocus-btn {
@@ -569,12 +590,8 @@ body.myt-focus {
   }
 }
 
-@media (max-height: 700px) {
-  #myt-overlay {
-    padding-top: 12vh;
-  }
-
-  #myt-explore-wrapper {
-    padding-bottom: 12vh;
+@media (max-height: 520px) {
+  #myt-spacer {
+    flex-basis: 20px;
   }
 }

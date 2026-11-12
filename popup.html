@@ -2,33 +2,45 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Feedback</title>
-    <link rel="stylesheet" href="popup.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minimal YouTube</title>
+  <link rel="stylesheet" href="popup.css" />
 </head>
 
-<body data-support-email="adulmdul135@gmail.com" data-subject="Minimal YouTube feedback">
-    <div class="orb orb-a"></div>
-    <div class="orb orb-b"></div>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <img class="logo" src="icons/icon48.png" alt="" width="40" height="40" />
+      <div>
+        <h1>Minimal YouTube</h1>
+        <p class="version" id="version"></p>
+      </div>
+    </header>
 
-    <div class="wrap">
-        <header class="hero">
-            <img class="logo" src="icons/Logo_icon.png" alt="Minimal YouTube" />
-            <div class="hero-text">
-                <div class="kicker">Minimal YouTube</div>
-                <h1>Send feedback</h1>
-                <p>Share ideas, issues, or quick notes.</p>
-            </div>
-        </header>
-
-        <div class="card contact-card">
-            <p class="contact-line">Contact me via <a href="mailto:adulmdul135@gmail.com">adulmdul135@gmail.com</a></p>
+    <section class="card">
+      <div class="row">
+        <div class="row-text">
+          <span class="label" id="switch-label">Search-only Home page</span>
+          <span class="desc" id="switch-desc">Replaces the Home feed with a search box.</span>
         </div>
+        <button id="switch" class="switch" type="button" role="switch" aria-checked="true"
+          aria-labelledby="switch-label" aria-describedby="switch-desc">
+          <span class="knob"></span>
+        </button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </section>
 
-        <footer class="foot">Thanks for helping improve the extension.</footer>
-    </div>
+    <footer class="foot">
+      <a href="https://github.com/AbdullahAlmatrfi/youtube-focus-mode/issues" target="_blank"
+        rel="noopener noreferrer">Report a problem</a>
+      <a href="https://github.com/AbdullahAlmatrfi/youtube-focus-mode/blob/main/docs/privacy-policy.md"
+        target="_blank" rel="noopener noreferrer">Privacy policy</a>
+    </footer>
+  </main>
 
+  <script src="popup.js"></script>
 </body>
 
 </html>

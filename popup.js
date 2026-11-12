@@ -1,52 +1,25 @@
-const form = document.getElementById("feedback-form");
-const userEmail = document.getElementById("user-email");
-const message = document.getElementById("message");
+const switchEl = document.getElementById("switch");
 const statusEl = document.getElementById("status");
-const copyBtn = document.getElementById("copy-btn");
+const versionEl = document.getElementById("version");
 
-const supportEmail = document.body.dataset.supportEmail || "";
-const subject = document.body.dataset.subject || "Feedback";
+versionEl.textContent = `Version ${chrome.runtime.getManifest().version}`;
 
-function buildBody(email, feedback) {
-    const lines = [];
-    if (email) lines.push(`From: ${email}`);
-    lines.push("");
-    lines.push("Feedback:");
-    lines.push(feedback);
-    return lines.join("\n");
+function render(enabled) {
+  switchEl.setAttribute("aria-checked", String(enabled));
+  statusEl.textContent = enabled
+    ? "On. Home shows search only."
+    : "Off. YouTube looks normal.";
 }
 
-function setStatus(text, isError = false) {
-    statusEl.textContent = text;
-    statusEl.classList.toggle("error", isError);
-}
+chrome.storage.local.get({ enabled: true }, (r) => render(r.enabled !== false));
 
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const feedback = message.value.trim();
-    if (!feedback) {
-        setStatus("Please add your feedback before sending.", true);
-        return;
+switchEl.addEventListener("click", () => {
+  const next = switchEl.getAttribute("aria-checked") !== "true";
+  render(next);
+  chrome.storage.local.set({ enabled: next }, () => {
+    if (chrome.runtime.lastError) {
+      render(!next);
+      statusEl.textContent = "Couldn't save. Try again.";
     }
-
-    const body = buildBody(userEmail.value.trim(), feedback);
-    const mailto = `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailto);
-    setStatus("Email draft opened.");
-});
-
-copyBtn.addEventListener("click", async () => {
-    const feedback = message.value.trim();
-    if (!feedback) {
-        setStatus("Please add your feedback before copying.", true);
-        return;
-    }
-
-    const body = buildBody(userEmail.value.trim(), feedback);
-    try {
-        await navigator.clipboard.writeText(`To: ${supportEmail}\nSubject: ${subject}\n\n${body}`);
-        setStatus("Copied to clipboard.");
-    } catch (err) {
-        setStatus("Copy failed. Please try again.", true);
-    }
+  });
 });
