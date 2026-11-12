@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Minimal YouTube",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "description": "Transform YouTube into a distraction-free, search-first experience.",
   "permissions": [
     "storage"

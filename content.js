@@ -335,8 +335,14 @@ function hideSuggestions(input, list) {
   });
 }
 
-/* Play a short exit animation, then run finalize (unless the panel reopened). */
+/* Play a short exit animation, then run finalize (unless the panel reopened).
+   A panel that is not actually open just finalizes — never flash an empty box. */
 function animateClose(el, finalize) {
+  if (!el.classList.contains("visible")) {
+    el.classList.remove("myt-closing");
+    finalize();
+    return;
+  }
   el.classList.remove("visible");
   const done = once(() => {
     el.classList.remove("myt-closing");
